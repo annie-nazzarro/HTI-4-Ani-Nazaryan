@@ -1,13 +1,21 @@
+from datetime import datetime
+
 class Employee:
-    def __init__(self, name, lname, jdate, salary, trial, gender, phone_number=0, ldate=0):
+    company_domain = "example.com"
+
+    def __init__(self, name, lname, jdate, salary, gender, trial_passed= False, phone_number=None, ldate=None):
         self.first_name = name
         self.last_name = lname
-        self.join_date = jdate
+        self.join_date = datetime.strptime(jdate, "%Y-%m-%d")
         self.earned_money = salary
-        self.passed_trial = trial
-        self.__gender = gender
+        if not isinstance(trial_passed, bool):
+            raise TypeError("trial_passed should be an instance of bool")
+        self.trial_passed = trial_passed
+        self.gender = gender
         self.phone_number = phone_number
         self.leave_date = ldate
+        if ldate is not None:
+            self.leave_date = datetime.strptime(ldate, "%Y-%m-%d")
         self.__email = None
         self.__full_name = None
 
@@ -27,26 +35,15 @@ class Employee:
 
     @gender.setter
     def gender(self, value):
-        if self.__gender == "M" or self.__gender == "F":
-            self.__gender = value
-
-        else:
-            raise ValueError("Gender can't be other than Male nad Female")
+        if value not in {'M', 'F'}:
+            raise ValueError("Gender can't be other than Male and Female")
+        self.__gender = value
 
 
-    trial = True
-
-    def __bool__(self, trial):
-        if trial:
-            return self.passed_trial
-        else:
-            return self.passed_trial is None
-
-    company_domain = "example.com"
 
     @property
     def email(self):
-        if self.__email is None:
+        if self.__email is  None:
             return f"{self.first_name.lower()}.{self.last_name.lower()}@{self.company_domain}"
         return self.__email
 
@@ -62,12 +59,17 @@ class Employee:
             raise ValueError("Employees must get salary")
 
 
-employee1 = Employee("Ani", "Nazaryan", " 01.11.2011", 130000, True, "F")
+employee1 = Employee("Ani", "Nazaryan", "2011-11-1", 130000, "F")
+employee2 = Employee("Davit", "Tovmasyan", "2014-12-4", 1500000, "M", phone_number="098-325-200")
 
 
 print(employee1.email)
 print(employee1.earned_money)
-print(employee1.passed_trial)
+print(employee1.trial_passed)
 print(employee1.join_date)
 print(employee1.full_name)
 print(employee1.gender)
+
+print(employee2.email)
+print(employee2.gender)
+print(employee2.phone_number)
